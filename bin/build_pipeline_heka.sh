@@ -5,7 +5,7 @@ set -o errexit
 
 pushd .
 # Machine config:
-# sudo yum install -y git hg golang cmake rpmdevtools GeoIP-devel rpmrebuild
+# sudo yum install -y git hg golang cmake rpmdevtools GeoIP-devel rpmrebuild librdkafka-dev
 
 BUILD_BRANCH=$1
 if [ -z "$BUILD_BRANCH" ]; then
@@ -122,6 +122,12 @@ echo 'Installing fx libs'
 mkdir -p $HEKA_MODS/fx
 cd $BASE
 gcc -I${LUA_INCLUDE_PATH} $SO_FLAGS --std=c99 heka/plugins/fx/executive_report.c heka/plugins/fx/xxhash.c heka/plugins/fx/common.c -o $HEKA_MODS/fx/executive_report.so
+
+echo 'Installing kafka libs'
+mkdir -p $HEKA_MODS/kafka
+cd $BASE
+gcc -I${LUA_INCLUDE_PATH} $SO_FLAGS --std=c99 heka/plugins/kafka/producer.c -l rdkafka -o $HEKA_MODS/kafka/producer.so
+gcc -I${LUA_INCLUDE_PATH} $SO_FLAGS --std=c99 heka/plugins/kafka/topic.c heka/plugins/kafka/producer.c -l rdkafka -o $HEKA_MODS/kafka/topic.so
 
 cd $BASE/build/heka/build
 
