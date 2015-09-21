@@ -51,7 +51,7 @@ function process_message(sequence_id)
 
     if ret ~= 0 then
         if ret == 105 then
-            return -4 -- queue full retry
+            return -3 -- queue full retry
         elseif ret == 90 then
             return -1 -- message too large
         elseif ret == 2 then
